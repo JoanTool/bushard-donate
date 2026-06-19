@@ -24,22 +24,10 @@ body { font-family: 'Inter', sans-serif; color: #1a1a1a; background: #f9f9f9; pa
 .freq-row { display: flex; background: #f5f5f5; border-radius: 8px; padding: 3px; margin-bottom: 1.25rem; }
 .freq-btn { flex: 1; padding: 0.5rem; text-align: center; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; border: none; background: transparent; color: #888; font-family: 'Inter', sans-serif; transition: all 0.15s; }
 .freq-btn.on { background: #093d69; color: #fff; }
-.amt-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 8px; }
-.amt-btn { border: 1.5px solid #d0d0d0; background: #fff; border-radius: 8px; padding: 0.9rem 0.5rem; text-align: center; cursor: pointer; transition: all 0.15s; }
-.amt-btn:hover { border-color: #093d69; background: #eaf2fa; }
-.amt-btn.on { border-color: #093d69; background: #093d69; }
-.amt-val { font-size: 20px; font-weight: 600; display: block; color: #1a1a1a; }
-.amt-btn.on .amt-val { color: #fff; }
-.amt-lbl { font-size: 11px; color: #888; display: block; margin-top: 2px; }
-.amt-btn.on .amt-lbl { color: rgba(255,255,255,0.7); }
 .custom-wrap { position: relative; margin: 8px 0 1.25rem; }
 .dollar { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 15px; color: #888; font-weight: 500; }
 .custom-input { width: 100%; padding: 0.75rem 0.75rem 0.75rem 1.75rem; border: 1.5px solid #d0d0d0; border-radius: 8px; font-size: 15px; background: #fff; color: #1a1a1a; font-family: 'Inter', sans-serif; }
 .custom-input:focus { outline: none; border-color: #093d69; }
-.impact { background: #f5f8fc; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; min-height: 60px; }
-.impact i { font-size: 22px; color: #093d69; flex-shrink: 0; }
-.impact p { font-size: 13px; color: #555; line-height: 1.5; }
-.impact p strong { color: #1a1a1a; }
 .donate-btn { width: 100%; padding: 1rem; background: #093d69; color: #fff; border: none; border-radius: 8px; font-size: 17px; font-weight: 600; cursor: pointer; letter-spacing: 0.02em; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Inter', sans-serif; transition: background 0.15s; }
 .donate-btn:hover { background: #0b4d85; }
 .secure { text-align: center; font-size: 12px; color: #888; display: flex; align-items: center; justify-content: center; gap: 5px; }
@@ -74,30 +62,16 @@ body { font-family: 'Inter', sans-serif; color: #1a1a1a; background: #f9f9f9; pa
       <button class="freq-btn" id="freq-monthly" onclick="setFreq('Monthly')">Monthly</button>
     </div>
 
-    <p class="sec-lbl">Select an amount</p>
-    <div class="amt-grid">
-      <div class="amt-btn" id="amt-25" onclick="selectAmt(25)"><span class="amt-val">$25</span><span class="amt-lbl">Yard sign</span></div>
-      <div class="amt-btn on" id="amt-50" onclick="selectAmt(50)"><span class="amt-val">$50</span><span class="amt-lbl">Door hangers</span></div>
-      <div class="amt-btn" id="amt-100" onclick="selectAmt(100)"><span class="amt-val">$100</span><span class="amt-lbl">Digital ads</span></div>
-      <div class="amt-btn" id="amt-250" onclick="selectAmt(250)"><span class="amt-val">$250</span><span class="amt-lbl">Mailer blast</span></div>
-      <div class="amt-btn" id="amt-500" onclick="selectAmt(500)"><span class="amt-val">$500</span><span class="amt-lbl">Radio spot</span></div>
-      <div class="amt-btn" id="amt-1000" onclick="selectAmt(1000)"><span class="amt-val">$1,000</span><span class="amt-lbl">Max impact</span></div>
-    </div>
-
+    <p class="sec-lbl">Choose amount</p>
     <div class="custom-wrap">
       <span class="dollar">$</span>
-      <input class="custom-input" type="number" id="custom-amt" placeholder="Other amount" oninput="setCustom(this)">
+      <input class="custom-input" type="number" id="custom-amt" placeholder="0.00" oninput="setCustom(this)">
     </div>
 
-    <div class="impact">
-      <i class="ti ti-speakerphone" id="imp-icon"></i>
-      <p id="imp-text"><strong>$50</strong> covers a full block of door hangers to reach voters in Merriam Park directly.</p>
-    </div>
-
-    <!-- ANEDOT: Replace href below with your Anedot donation URL when ready -->
-    <button class="donate-btn" id="donate-btn" onclick="alert('Anedot link coming soon!')">
+    <!-- ANEDOT: set ANEDOT_BASE_URL below to your real Anedot Action Page URL (no query string) -->
+    <button class="donate-btn" id="donate-btn" onclick="goToAnedot()">
       <i class="ti ti-heart"></i>
-      <span id="btn-text">Donate $50 to Bushard for SD64</span>
+      <span id="btn-text">Donate to Bushard for SD64</span>
     </button>
     <p class="secure"><i class="ti ti-lock" style="font-size:13px"></i> Secure &middot; Processed via Anedot</p>
   </div>
@@ -117,17 +91,12 @@ body { font-family: 'Inter', sans-serif; color: #1a1a1a; background: #f9f9f9; pa
 </div>
 
 <script>
-var amt = 50;
+// SET THIS to your real Anedot Action Page URL (no query string), e.g.
+// var ANEDOT_BASE_URL = 'https://secure.anedot.com/bushard-sd64/donate';
+var ANEDOT_BASE_URL = 'https://secure.anedot.com/your-campaign/donate';
+
+var amt = null;
 var freq = 'Once';
-var impacts = {
-  25:   ['ti-map-pin',       '<strong>$25</strong> puts a yard sign in a neighbor\'s lawn and gets Robert\'s name in front of hundreds of voters.'],
-  50:   ['ti-speakerphone',  '<strong>$50</strong> covers a full block of door hangers to reach voters in Merriam Park directly.'],
-  100:  ['ti-device-laptop', '<strong>$100</strong> funds targeted digital ads reaching SD64 voters across social media for a full day.'],
-  250:  ['ti-mail',          '<strong>$250</strong> sends a direct mail piece to dozens of undecided households in Ward 4.'],
-  500:  ['ti-radio',         '<strong>$500</strong> helps fund a radio spot reaching thousands of Saint Paul commuters.'],
-  1000: ['ti-rocket',        '<strong>$1,000</strong> is the maximum-impact contribution — funding a full voter outreach push across SD64.']
-};
-var amts = [25,50,100,250,500,1000];
 
 function setFreq(f) {
   freq = f;
@@ -136,42 +105,31 @@ function setFreq(f) {
   updateBtn();
 }
 
-function selectAmt(a) {
-  amt = a;
-  document.getElementById('custom-amt').value = '';
-  amts.forEach(function(n) {
-    document.getElementById('amt-'+n).className = 'amt-btn' + (n===a?' on':'');
-  });
-  updateImpact(a, null);
-  updateBtn();
-}
-
 function setCustom(el) {
   var v = parseFloat(el.value);
-  if (!isNaN(v) && v > 0) {
-    amt = v;
-    amts.forEach(function(n) { document.getElementById('amt-'+n).className = 'amt-btn'; });
-    updateImpact(null, v);
-    updateBtn();
-  }
-}
-
-function updateImpact(a, custom) {
-  var icon = document.getElementById('imp-icon');
-  var text = document.getElementById('imp-text');
-  if (custom) {
-    icon.className = 'ti ti-heart';
-    text.innerHTML = '<strong>$' + Math.round(custom).toLocaleString() + '</strong> goes directly toward reaching more voters across Senate District 64.';
-  } else if (impacts[a]) {
-    icon.className = 'ti ' + impacts[a][0];
-    text.innerHTML = impacts[a][1];
-  }
+  amt = (!isNaN(v) && v > 0) ? v : null;
+  updateBtn();
 }
 
 function updateBtn() {
   var lbl = freq === 'Monthly' ? '/mo' : '';
-  var disp = amt >= 1000 ? '$' + (amt/1000).toFixed(amt%1000===0?0:1) + 'K' : '$' + Math.round(amt).toLocaleString();
-  document.getElementById('btn-text').textContent = 'Donate ' + disp + lbl + ' to Bushard for SD64';
+  if (amt) {
+    var disp = amt >= 1000 ? '$' + (amt/1000).toFixed(amt%1000===0?0:1) + 'K' : '$' + Math.round(amt).toLocaleString();
+    document.getElementById('btn-text').textContent = 'Donate ' + disp + lbl + ' to Bushard for SD64';
+  } else {
+    document.getElementById('btn-text').textContent = 'Donate to Bushard for SD64';
+  }
+}
+
+function goToAnedot() {
+  var url = ANEDOT_BASE_URL;
+  if (amt) {
+    url += '?amount=' + encodeURIComponent(amt);
+    if (freq === 'Monthly') url += '&recurring=monthly';
+  } else if (freq === 'Monthly') {
+    url += '?recurring=monthly';
+  }
+  window.open(url, '_blank');
 }
 </script>
 </body>
